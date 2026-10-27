@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | LifeDrop</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #650014, #d7193f, #a90e2d);
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 38px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            color: #d7193f;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            color: #292929;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #d7193f;
+            box-shadow: 0 0 0 3px rgba(215, 25, 63, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #d7193f;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #a90e2d;
+        }
+
+        .message {
+            text-align: center;
+            margin-bottom: 18px;
+            padding: 10px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #ffe5e9;
+            color: #a90e2d;
+        }
+
+        .success {
+            background: #e5f7e9;
+            color: #176b2c;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: #d7193f;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+
+        <div class="logo">LifeDrop</div>
+        <p class="subtitle">Blood Bank Management System</p>
+
+        <h2>Admin Login</h2>
+
+        <div class="message error"
+             th:if="${param.error}">
+            Invalid username or password.
+        </div>
+
+        <div class="message success"
+             th:if="${param.logout}">
+            You have logged out successfully.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+
+            <label for="username">Username</label>
+            <input type="text"
+                   id="username"
+                   name="username"
+                   placeholder="Enter admin username"
+                   autocomplete="username"
+                   required
+                   autofocus>
+
+            <label for="password">Password</label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="Enter your password"
+                   autocomplete="current-password"
+                   required>
+
+            <button type="submit">Login to Dashboard</button>
+
+        </form>
+
+        
+
+        <footer>
+            &copy; 2026 LifeDrop. Donate Blood. Save Lives.
+        </footer>
+
+    </div>
+</body>
+</html>

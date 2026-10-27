@@ -1,0 +1,480 @@
+html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LifeDrop | Find Blood Donors</title>
+
+    <style>
+        :root {
+            --red: #d62839;
+            --dark-red: #a41628;
+            --light-red: #fff0f1;
+            --background: #fff8f8;
+            --text: #292d32;
+            --muted: #6b7280;
+            --border: #f0dfe1;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 15px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 3px 18px #5b17200d;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            color: var(--red);
+            font-size: 25px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            color: #454545;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 9px 12px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--light-red);
+            color: var(--red);
+        }
+
+        /* Hero banner */
+        .hero {
+            background: linear-gradient(120deg, #a41628, #e63946);
+            color: white;
+            padding: 55px 7%;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 6px 12px;
+            border: 1px solid #ffffff66;
+            background: #ffffff18;
+            border-radius: 30px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 45px);
+            line-height: 1.2;
+            margin: 18px 0 12px;
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin: 0;
+            color: #ffe7e9;
+            font-size: 16px;
+        }
+
+        /* Main content */
+        .container {
+            max-width: 1100px;
+            margin: 35px auto 60px;
+            padding: 0 22px;
+        }
+
+        .section-heading {
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 25px;
+            margin: 0 0 5px;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .card {
+            background: var(--white);
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 8px 28px #65151c08;
+            margin-bottom: 28px;
+        }
+
+        /* Search form */
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            background: white;
+            color: var(--text);
+            border: 1px solid #e4d6d8;
+            border-radius: 9px;
+            font: inherit;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px #d628391a;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            background: var(--red);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            background: var(--dark-red);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px #d6283933;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--red);
+            border-color: var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-red);
+            color: var(--dark-red);
+        }
+
+        /* Donor table */
+        .table-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .table-heading h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .table-heading p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 520px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #f4e9ea;
+        }
+
+        th {
+            background: #fff0f1;
+            color: #8f1726;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #fffafa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .blood-badge {
+            display: inline-block;
+            min-width: 44px;
+            text-align: center;
+            padding: 5px 9px;
+            border-radius: 7px;
+            background: var(--light-red);
+            color: var(--dark-red);
+            font-weight: 800;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px;
+            color: var(--muted);
+        }
+
+        /* Footer */
+        footer {
+            padding: 25px 15px;
+            background: #291a1c;
+            color: #f9dfe2;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        /* Mobile responsive layout */
+        @media (max-width: 700px) {
+            nav {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .nav-links a {
+                padding: 7px 9px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 40px 22px;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 19px;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .search-actions {
+                flex-direction: column;
+            }
+
+            .search-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a class="logo" href="/">Life<span>Drop</span> ♥</a>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/register">Register Donor</a>
+        <a href="/donors" class="active">Find Donors</a>
+        <a href="/blood-groups">Blood Groups</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="hero-content">
+        <span class="hero-label">❤️ EVERY DONATION MATTERS</span>
+        <h1>Find a Blood Donor.<br>Help Save a Life.</h1>
+        <p>
+            Search registered donors by blood group or city.
+            A small act of kindness can make a life-changing difference.
+        </p>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="section-heading">
+        <h2>Find Your Blood Donor</h2>
+        <p>Enter a blood group, a city, or both to search the donor directory.</p>
+    </section>
+
+    <section class="card">
+        <form action="/donors" method="get">
+
+            <div class="search-grid">
+                <div>
+                    <label for="bloodGroup">Blood Group</label>
+                    <select id="bloodGroup" name="bloodGroup">
+                        <option value="">All blood groups</option>
+                        <option value="A+" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'A+'}">A+</option>
+                        <option value="A-" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'A-'}">A-</option>
+                        <option value="B+" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'B+'}">B+</option>
+                        <option value="B-" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'B-'}">B-</option>
+                        <option value="AB+" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'AB+'}">AB+</option>
+                        <option value="AB-" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'AB-'}">AB-</option>
+                        <option value="O+" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'O+'}">O+</option>
+                        <option value="O-" th:selected="${param.bloodGroup != null and param.bloodGroup[0] == 'O-'}">O-</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="city">City</label>
+                    <input
+                        id="city"
+                        type="text"
+                        name="city"
+                        placeholder="e.g. Bengaluru"
+                        th:value="${param.city != null ? param.city[0] : ''}">
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button type="submit" class="btn">Search Donors →</button>
+                <a href="/donors" class="btn btn-outline">Clear Filters</a>
+            </div>
+
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="table-heading">
+            <div>
+                <h2>Registered Donors</h2>
+                <p>Browse donors available in the directory.</p>
+            </div>
+            <a href="/register" class="btn">+ Register as Donor</a>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Donor Name</th>
+                        <th>Age</th>
+                        <th>Blood Group</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="donor : ${donors}">
+                        <td th:text="${donor.name}"></td>
+                        <td th:text="${donor.age}"></td>
+                        <td>
+                            <span class="blood-badge"
+                                  th:text="${donor.bloodGroup}"></span>
+                        </td>
+                        <td th:text="${donor.city}"></td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(donors)}">
+                        <td colspan="4" class="empty-state">
+                            No donors found. Try another search or
+                            <a href="/register">register as a donor</a>.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <strong>LifeDrop ♥</strong>
+    <p>Connecting donors with people in need. Every drop counts.</p>
+</footer>
+
+</body>
+</html>
